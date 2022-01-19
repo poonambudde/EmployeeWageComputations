@@ -8,6 +8,7 @@ maxWorkingDays=20;
 maxWorkingHrs=100;
 totalEmpHrs=0;
 totalWorkingDays=0;
+declare -A dailyWage
 
 function getWorkingHrs(){
 	case $1 in
@@ -24,18 +25,20 @@ function getWorkingHrs(){
 	echo $empHrs
 }
 
-function getEmpWagePerDay(){
+function getEmpWageForADay(){
 	echo $(($1*$empRatePerHrs))
 }
 while [[ $totalEmpHrs -lt $maxWorkingHrs && $totalWorkingDays -le $maxWorkingDays ]]
 do
-  ((totalWorkingDays++))
+((totalWorkingDays++))
 	empCheck=$((RANDOM%3));
 	empHrs=$( getWorkingHrs $empCheck )
 	totalEmpHrs=$(($totalEmpHrs+$empHrs))
-	dailyWage[$totalWorkingDays]=$( getEmpWagePerDay $empHrs)
+	dailyWage["Day "$totalWorkingDays]=$( getEmpWageForADay $empHrs)
 done
 
-  totalSalary=$(($totalEmpHrs*$empRatePerHrs));
-  echo $totalSalary
-  echo ${dailyWage[@]}
+totalSalary=$(($totalEmpHrs * $empRatePerHrs))
+echo $totalSalary
+echo ${!dailyWage[@]}
+echo ${dailyWage[@]}
+echo "last day salary " ${dailyWage["Day "20]}
